@@ -20,13 +20,15 @@ void refreshBuffer(char buf[], int size){
 	}
 }
 
-// Function receiveACK_Segment, return ACK
+
+// Function receiveACK_Segment, return -1 if nothing received, 0 if 'FIN' reserve, or ACK if received
 int receiveACK_Segment(char bufferACK[], int desc, struct sockaddr_in adressClient, int* sizeResult, fd_set set){
 	int i;
 	char numACK[7];
-	RTTtimeval.tv_sec=1;
-	RTTtimeval.tv_usec=0; // just for the tests
+	RTTtimeval.tv_sec=0;
+	RTTtimeval.tv_usec=100000; // just for the tests
 	// Waiting on the socket
+	FD_SET(desc, &set);
 	select(desc+1, &set, NULL, NULL, &RTTtimeval);
 	if(FD_ISSET(desc, &set)){
 		recvfrom(desc, bufferACK, 11, 0, (struct sockaddr*)&adressClient, sizeResult);
@@ -37,7 +39,7 @@ int receiveACK_Segment(char bufferACK[], int desc, struct sockaddr_in adressClie
 		numACK[6]='\0';
 		return atoi(numACK);
 	}
-	printf("Je recois rien après 1 s\n");
+	printf("Je recois rien après 100 ms\n");
 	return -1;
 }
 
@@ -78,7 +80,7 @@ int bindServer(int* soc, struct sockaddr_in* ptrAdress){
 }
 
 // Function sendData : send a paquet with a size of RCVSIZE, and the 6 first bytes are the segment number
-int sendData(int seq, char buffer[], char purData[], int desc, struct sockaddr_in adressClient, socklen_t adressClientLength){ //purData 1018, buffer 1024.
+int sendData(int seq, char buffer[], char purData[], int desc, struct sockaddr_in adressClient, socklen_t adressClientLength, int sizeBuffer){ //purData 1018, buffer 1024.
 	int i, try;
 	char zero[1], c[7];
 	c[6] = '\0';
@@ -103,8 +105,11 @@ int sendData(int seq, char buffer[], char purData[], int desc, struct sockaddr_i
 	strcat(buffer, c);
 	buffer[6]='\0';
 	strcat(buffer, purData);
- 
-	try = sendto(desc, buffer, RCVSIZE, 0, (struct sockaddr*)&adressClient, adressClientLength);
+	printf("%d %d %d %d %s\n", desc, adressClient.sin_port, adressClientLength, adressClient.sin_family, inet_ntoa(adressClient.sin_addr));
+	try = sendto(desc, buffer, sizeBuffer, 0, (struct sockaddr*)&adressClient, adressClientLength);
+	if(try<0){
+		perror("error sendto");
+	}
 	return try;
 }
 
