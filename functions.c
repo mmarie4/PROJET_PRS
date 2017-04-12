@@ -24,19 +24,21 @@ void refreshBuffer(char buf[], int size){
 int receiveACK_Segment(char bufferACK[], int desc, struct sockaddr_in adressClient, int* sizeResult, fd_set set){
 	int i;
 	char numACK[7];
-	refreshBuffer(bufferACK, 11);
+	RTTtimeval.tv_sec=1;
+	RTTtimeval.tv_usec=0; // just for the tests
 	// Waiting on the socket
-	select(desc+1, &set, NULL, NULL, NULL);
+	select(desc+1, &set, NULL, NULL, &RTTtimeval);
 	if(FD_ISSET(desc, &set)){
-		printf("Je recois un truc\n");
 		recvfrom(desc, bufferACK, 11, 0, (struct sockaddr*)&adressClient, sizeResult);
+		bufferACK[11]='\0';
+		for(i=0; i++; i<6){
+			numACK[i] = bufferACK[i+2];
+		}
+		numACK[6]='\0';
+		return atoi(numACK);
 	}
-	bufferACK[11]='\0';
-	for(i=0; i++; i<6){
-		numACK[i] = bufferACK[i+2];
-	}
-	numACK[6]='\0';
-	return atoi(numACK);
+	printf("Je recois rien après 1 s\n");
+	return -1;
 }
 
 // Test if we've got the port number into the arguments
@@ -76,34 +78,33 @@ int bindServer(int* soc, struct sockaddr_in* ptrAdress){
 }
 
 // Function sendData : send a paquet with a size of RCVSIZE, and the 6 first bytes are the segment number
-int sendData(int* seq, char buffer[], char purData[], int desc, struct sockaddr_in adressClient, socklen_t adressClientLength){ //purData 1018, buffer 1024.
+int sendData(int seq, char buffer[], char purData[], int desc, struct sockaddr_in adressClient, socklen_t adressClientLength){ //purData 1018, buffer 1024.
 	int i, try;
 	char zero[1], c[7];
 	c[6] = '\0';
 	sprintf(zero, "%d", 0);	
-	if((*seq)<10){
+	if(seq<10){
 		for(i=0; i<5; i++) buffer[i]='0';
 		buffer[i]='\0';
-	}else if(9<(*seq) && (*seq)<100){
+	}else if(9<seq && seq<100){
 		for(i=0; i<4; i++) buffer[i]='0';
 		buffer[i]='\0';
-	}else if(99<(*seq) && (*seq)<1000){
+	}else if(99<seq && seq<1000){
 		for(i=0; i<3; i++) buffer[i]='0';
 		buffer[i]='\0';
-	}else if(999<(*seq) && (*seq)<10000){
+	}else if(999<seq && seq<10000){
 		for(i=0; i<2; i++) buffer[i]='0';
 		buffer[i]='\0';
-	}else if(9999<(*seq) && (*seq)<100000){
+	}else if(9999<seq && seq<100000){
 		for(i=0; i<1; i++) buffer[i]='0';
 		buffer[i]='\0';
 	}
-	sprintf(c, "%d", (*seq));
+	sprintf(c, "%d", seq);
 	strcat(buffer, c);
 	buffer[6]='\0';
 	strcat(buffer, purData);
  
 	try = sendto(desc, buffer, RCVSIZE, 0, (struct sockaddr*)&adressClient, adressClientLength);
-	(*seq)++;
 	return try;
 }
 

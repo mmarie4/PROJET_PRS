@@ -69,12 +69,18 @@ int main(int argc, char* argv[]){
 					// copy on 'cloned_by_server.jpg' just for test
 					int ecrit = fwrite(purData, sizeof(char), sizeof(purData), file2);
 					usleep(1);
-					try = sendData(&seq, buffer, purData, descData, adressClient, sizeof(adressClient));
+					try = sendData(seq, buffer, purData, descData, adressClient, sizeof(adressClient));
 					printf("%d bytes sent\n", try);
 					// test reception ACK
 					char bufferACK[11];
 					int sizeResult;
-					ACK = receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set);					
+					ACK=receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set);
+					while(ACK==-1){
+						// Resend the paquet
+						try = sendData(seq, buffer, purData, descData, adressClient, sizeof(adressClient));
+						ACK=receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set);
+					}
+					seq++;				
 					printf("ACK received : %d\n", ACK);
 					nbChar+=(try-6);
 				}
@@ -86,7 +92,7 @@ int main(int argc, char* argv[]){
 				int ecrit = fwrite(bufferEnd, sizeof(char), sizeof(bufferEnd), file2);
 				usleep(1);
 				// send 'FIN'
-				try = sendData(&seq, bufferEndWithSeq, bufferEnd, descData, adressClient, (bytesAtEnd+6));
+				try = sendData(seq, bufferEndWithSeq, bufferEnd, descData, adressClient, (bytesAtEnd+6));
 				// test reception ACK
 				char bufferACK[11];
 				int sizeResult;

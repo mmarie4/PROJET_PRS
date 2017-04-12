@@ -10,6 +10,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <sys/select.h>
+#include <sys/time.h>
 
 #define RCVSIZE 1024
 
@@ -21,7 +22,7 @@ void sendSYN(int* soc, struct sockaddr_in* ptrAdress);
 void sendSYNACK(int* soc, struct sockaddr_in* ptrAdress, int new_port);
 void sendACK(int* soc, struct sockaddr_in* ptrAdress);
 int handShakeServer(int* desc, struct sockaddr_in* ptrAdress, int port_data);
-int sendData(int* seq, char buffer[], char purData[], int descData, struct sockaddr_in adressClient, socklen_t adressClientLength);
+int sendData(int seq, char buffer[], char purData[], int descData, struct sockaddr_in adressClient, socklen_t adressClientLength);
 void receiveFileName(int descData, struct sockaddr_in adressClientData, char fileName[]);
 
 void testArg(int* arg);
