@@ -59,6 +59,9 @@ int main(int argc, char* argv[]){
 				int size = ftell(file);
 				printf("size : %d\n", size);
 				fseek(file,0,SEEK_SET);
+				// Create file descriptor set in order to test if ACK is received or not
+				fd_set set;
+				FD_ZERO(&set);
 				// send paquet
 				while((size-nbChar)>(RCVSIZE-6)){
 					int res = fread(purData, 1, RCVSIZE-6, file);
@@ -71,7 +74,7 @@ int main(int argc, char* argv[]){
 					char bufferACK[11];
 					int sizeResult;
 					ACK = receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult);					
-					printf("ACK received : %d\n", 
+					printf("ACK received : %d\n", ACK);
 					nbChar+=(try-6);
 				}
 				// read last part (less than RCSIZE-6) and send it

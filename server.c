@@ -59,6 +59,10 @@ int main(int argc, char* argv[]){
 				int size = ftell(file);
 				printf("size : %d\n", size);
 				fseek(file,0,SEEK_SET);
+				// Create file descriptor set in order to test if ACK is received or not
+				fd_set set;
+				FD_ZERO(&set);
+				FD_SET(descACK, &setUDP);
 				// send paquet
 				while((size-nbChar)>(RCVSIZE-6)){
 					int res = fread(purData, 1, RCVSIZE-6, file);
