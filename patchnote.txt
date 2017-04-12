@@ -1,0 +1,12 @@
+----------------- 6/07/2017 ------------------------------------------
+dans receiveFileName c'était un char* , on utilise tjs des char[] d'habitudes sinon ça marche pas + sizeof marchait pas -> réparé
+Ajout d'une clonage par le server pour verifier bonne lecture -> il y avait un pb on calculait mal la limite (nbChar+=try alors que y a 6 de seq dans le try) -> réparé
+Ajout d'un envoi du segment 'FIN' a la fin
+Ajout d'un receiveACK (juste pour tester, pas de controle de congestion) pour voir si les paquets sont bien reçus car le client n'écrit rien...
+ -> Le client renvoie bien des ACK (attention, ils sont de la forme "000138" et non pas "ACK000138") par contre il écrit toujours rien donc je comprend pas...
+ -> A essayer sur les machines de l'insa mais ça a pas de sens, tous les paquets sont envoyés et on reçoit bien l'ACK...
+
+Pour résumer: 
+On peut donner le nom du fichier dans la commande, le fichier est bien lu puisqu'on peut le réécrire correctement direct, et on reçoit bien les ACK pour chaque segment
+Reste à découvrir pourquoi le client ne les écrit pas dans le fichier
+----------------------------------------------------------------------
