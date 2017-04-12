@@ -9,6 +9,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <sys/select.h>
 
 #define RCVSIZE 1024
 
@@ -28,8 +29,6 @@ void testArg(int* arg);
 void refreshBuffer(char buf[], int size);
 void handleError(int val, char* error);
 
-void sendSEQ(int* seq, char bufferImage[], int descClient, struct sockaddr_in adressServer);
-void receiveSEQ(int* seq, char bufferImage[], int descData, struct sockaddr_in adressServerData, int* sizeResult);
-int receiveACK_Segment(char bufferACK[], int descClient, struct sockaddr_in adressClient, int* sizeResult);
+int receiveACK_Segment(char bufferACK[], int descClient, struct sockaddr_in adressClient, int* sizeResult, fd_set set);
 
 #endif

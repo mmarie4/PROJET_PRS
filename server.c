@@ -49,7 +49,7 @@ int main(int argc, char* argv[]){
 			if(pid==0){ // Processus fils : send data
 				int seq = 0;
 				char purData[RCVSIZE-6];
-				// Receive filename and open the file
+				// Receive filename and open the file (and we get here the new client adress, which we'll use to send data)
 				char filename[100];
 				receiveFileName(descData, adressClient, filename);
 				file = fopen(filename, "rb");
@@ -62,7 +62,7 @@ int main(int argc, char* argv[]){
 				// Create file descriptor set in order to test if ACK is received or not
 				fd_set set;
 				FD_ZERO(&set);
-				FD_SET(descACK, &setUDP);
+				FD_SET(descData, &set);
 				// send paquet
 				while((size-nbChar)>(RCVSIZE-6)){
 					int res = fread(purData, 1, RCVSIZE-6, file);
@@ -74,7 +74,7 @@ int main(int argc, char* argv[]){
 					// test reception ACK
 					char bufferACK[11];
 					int sizeResult;
-					ACK = receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult);					
+					ACK = receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set);					
 					printf("ACK received : %d\n", ACK);
 					nbChar+=(try-6);
 				}
@@ -90,13 +90,13 @@ int main(int argc, char* argv[]){
 				// test reception ACK
 				char bufferACK[11];
 				int sizeResult;
-				receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult);
+				receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set);
 				printf("%d bytes sent\n", try);
 				sendto(descData, bufferFIN, sizeof(bufferFIN), 0, (struct sockaddr*)&adressClient, sizeof(adressClient));
 				// test reception ACK
 				bufferACK[7];
 				sizeResult;
-				receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult);
+				receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set);
 
 				fflush(file);
 				fclose(file);

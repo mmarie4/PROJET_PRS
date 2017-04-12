@@ -21,11 +21,16 @@ void refreshBuffer(char buf[], int size){
 }
 
 // Function receiveACK_Segment, return ACK
-int receiveACK_Segment(char bufferACK[], int descClient, struct sockaddr_in adressClient, int* sizeResult){
+int receiveACK_Segment(char bufferACK[], int desc, struct sockaddr_in adressClient, int* sizeResult, fd_set set){
 	int i;
 	char numACK[7];
 	refreshBuffer(bufferACK, 11);
-	recvfrom(descClient, bufferACK, 11, 0, (struct sockaddr*)&adressClient, sizeResult);
+	// Waiting on the socket
+	select(desc+1, &set, NULL, NULL, NULL);
+	if(FD_ISSET(desc, &set)){
+		printf("Je recois un truc\n");
+		recvfrom(desc, bufferACK, 11, 0, (struct sockaddr*)&adressClient, sizeResult);
+	}
 	bufferACK[11]='\0';
 	for(i=0; i++; i<6){
 		numACK[i] = bufferACK[i+2];
