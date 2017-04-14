@@ -25,7 +25,7 @@ int main(int argc, char* argv[]){
 	char bufferFIN[4] = "FIN\0";
 	int msg, try, ACK;
 	FILE* file;
-	int nbChar = 0, seq=0;
+	int nbChar = 0, seq=1;
 
 	//Test the number of args
 	testArg(&argc);
@@ -48,7 +48,6 @@ int main(int argc, char* argv[]){
 
 			int pid=fork();
 			if(pid==0){ // Processus fils : send data
-				int seq = 0;
 				char purData[RCVSIZE-6];
 				// Receive filename and open the file (and we get here the new client adress, which we'll use to send data)
 				char filename[100];

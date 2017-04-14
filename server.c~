@@ -25,7 +25,7 @@ int main(int argc, char* argv[]){
 	char bufferFIN[4] = "FIN\0";
 	int msg, try, ACK;
 	FILE* file;
-	int nbChar = 0, seq=0;
+	int nbChar = 0, seq=1;
 
 	//Test the number of args
 	testArg(&argc);
@@ -104,12 +104,7 @@ int main(int argc, char* argv[]){
 
 				// send 'FIN'
 				sendto(descData, bufferFIN, sizeof(bufferFIN), 0, (struct sockaddr*)&adressClient, sizeof(adressClient));
-				// test reception ACK
-				ACK=receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set);
-				while(ACK!=0){
-					sendto(descData, bufferFIN, sizeof(bufferFIN), 0, (struct sockaddr*)&adressClient, sizeof(adressClient));
-					ACK=receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set);
-				}
+				printf("File sent !\n");
 
 				fflush(file);
 				fclose(file);
