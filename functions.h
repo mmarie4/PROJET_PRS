@@ -34,6 +34,6 @@ void testArg(int* arg);
 void refreshBuffer(char buf[], int size);
 void handleError(int val, char* error);
 
-int receiveACK_Segment(char bufferACK[], int descClient, struct sockaddr_in adressClient, int* sizeResult, fd_set set);
+int receiveACK_Segment(char bufferACK[], int descClient, struct sockaddr_in adressClient, int* sizeResult, fd_set set, struct timeval *RTTtimeval, struct timeval *waiting_time);
 
 #endif

@@ -4,7 +4,6 @@
 
 
 int desc;
-struct timeval RTTtimeval;
 
 void terminate(){
 	close(desc);
@@ -28,7 +27,7 @@ int main(int argc, char* argv[]){
 	int msg, try, ACK;
 	FILE* file;
 	int nbChar = 0, seq=1;
-	struct timeval start, end;
+	struct timeval start, end, RTTtimeval, waiting_time;
 	struct timezone tz;
 
 	//Test the number of args
@@ -68,26 +67,28 @@ int main(int argc, char* argv[]){
 				fd_set set;
 				FD_ZERO(&set);
 
-				// send paquet
+				//initialize RTT just for the first paquet, before real RTT is calculated
+				RTTtimeval.tv_usec = 30000;
+				RTTtimeval.tv_sec = 0;
+
+				// send paquets
 				while((size-nbChar)>(RCVSIZE-6)){
 					resetTIMEVAL(&start, &end);
 					memset(purData, '\0', 1018);
 					memset(buffer, '\0', 1024);
 					int res = fread(purData, 1, RCVSIZE-6, file);
-					// copy on 'cloned_by_server.jpg' just for test
 
 					usleep(1);
 					startRTT(&start, &tz);
 					try = sendData(seq, buffer, purData, descData, adressClient, sizeof(adressClient), RCVSIZE);
 					//printf("%d bytes sent\n", try);
 					// test reception ACK
-					int sizeResult;
-					ACK=receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set);
+					ACK = receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set, &RTTtimeval, &waiting_time);
 					endRTT(&end, &tz, &start, &RTTtimeval);
 					while(ACK==-1){
 						// Resend the paquet
 						try = sendData(seq, buffer, purData, descData, adressClient, sizeof(adressClient), RCVSIZE);
-						ACK=receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set);
+						ACK = receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set, &RTTtimeval, &waiting_time);
 					}
 					seq++;
 					printf("ACK received : %d\n", ACK);
@@ -105,12 +106,12 @@ int main(int argc, char* argv[]){
 
 				// test reception ACK
 				int sizeResult;
-				ACK=receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set);
+				ACK=receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set, &RTTtimeval, &waiting_time);
 
 				while(ACK==-1){
 					// Resend the paquet
 					try = sendData(seq, bufferEndWithSeq, bufferEnd, descData, adressClient, sizeof(adressClient), (bytesAtEnd+6));
-					ACK=receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set);
+					ACK=receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set, &RTTtimeval, &waiting_time);
 				}
 
 				printf("ACK received : %d\n", ACK);

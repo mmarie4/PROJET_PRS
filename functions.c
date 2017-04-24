@@ -9,7 +9,6 @@
 #include <unistd.h>
 #include "functions.h"
 
-long long RTT;
 struct timeval RTTtimeval;
 
 // Function refreshBuffer which replaces all the char of a char[] with a '\0'
@@ -33,32 +32,28 @@ void startRTT(struct timeval *start, struct timezone *tz){
 
 void endRTT(struct timeval *end, struct timezone *tz, struct timeval *start, struct timeval *RTTtimeval){
 	gettimeofday(end, tz);
-	long long diff;
-	diff=((*end).tv_sec-(*start).tv_sec) * 1000000L + ((*end).tv_usec-(*start).tv_usec);
-  printf("durée = %d usec\n",diff);
 	timersub(end, start, RTTtimeval);
-	RTT=((*RTTtimeval).tv_sec) * 1000000L + ((*RTTtimeval).tv_usec);
-	printf("RTTtimeval : %d usec\n", RTT);
+	printf("RTTtimeval : %ld usec\n", (*RTTtimeval).tv_usec);
 }
+
 // Function receiveACK_Segment, return -1 if nothing received, 0 if 'FIN' reserve, or ACK if received
-int receiveACK_Segment(char bufferACK[], int desc, struct sockaddr_in adressClient, int* sizeResult, fd_set set){
+int receiveACK_Segment(char bufferACK[], int desc, struct sockaddr_in adressClient, int* sizeResult, fd_set set, struct timeval *RTTtimeval, struct timeval *waiting_time){
 	int i;
 	char numACK[7];
-	RTTtimeval.tv_sec=0;
-	RTTtimeval.tv_usec=100000; // just for the tests
 	// Waiting on the socket
 	FD_SET(desc, &set);
-	select(desc+1, &set, NULL, NULL, &RTTtimeval);
+	timeradd(RTTtimeval, RTTtimeval, waiting_time); // RTT*2 to detect paquet loss
+	select(desc+1, &set, NULL, NULL, waiting_time);
 	if(FD_ISSET(desc, &set)){
 		recvfrom(desc, bufferACK, 11, 0, (struct sockaddr*)&adressClient, sizeResult);
 		bufferACK[11]='\0';
-		for(i=0; i++; i<6){
-			numACK[i] = bufferACK[i+2];
+		for(i=0; i<6; i++){
+			numACK[i] = bufferACK[i+3];
 		}
 		numACK[6]='\0';
 		return atoi(numACK);
 	}
-	printf("Je recois rien après 100 ms\n");
+	printf("Nothing received : resend paquet\n");
 	return -1;
 }
 
