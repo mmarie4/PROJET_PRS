@@ -25,6 +25,10 @@ int handShakeServer(int* desc, struct sockaddr_in* ptrAdress, int port_data);
 int sendData(int seq, char buffer[], char purData[], int descData, struct sockaddr_in adressClient, socklen_t adressClientLength, int sizeBuffer);
 void receiveFileName(int descData, struct sockaddr_in adressClientData, char fileName[]);
 
+void resetTIMEVAL(struct timeval *start, struct timeval *end);
+void startRTT(struct timeval *start, struct timezone *tz);
+void endRTT(struct timeval *end, struct timezone *tz, struct timeval *start, struct timeval *RTTtimeval);
+
 void testArg(int* arg);
 
 void refreshBuffer(char buf[], int size);

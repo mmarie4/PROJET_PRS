@@ -8,10 +8,10 @@ server_port= sys.argv[3]
 file_name= sys.argv[4]
 output_file= "output.txt"
 
-name= server_name.split("-")
-suffix= name[0][-2:]
+#name= server_name.split("-")
+#suffix= name[0][-2:]
 
-client_name= "client"+suffix
+client_name= "client1"
 
 output= open(output_file, "a")
 
@@ -34,7 +34,7 @@ output.write(str(server_name)+" "+ str(statinfo.st_size)+ " "+ str(delta)+ " "+ 
 
 output.close()
 
-remove_command= "rm "+ copy_file_name
-os.system(remove_command)
+#remove_command= "rm "+ copy_file_name
+#os.system(remove_command)
 
 

@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include "functions.h"
 
-double RTT;
+long long RTT;
 struct timeval RTTtimeval;
 
 // Function refreshBuffer which replaces all the char of a char[] with a '\0'
@@ -20,7 +20,26 @@ void refreshBuffer(char buf[], int size){
 	}
 }
 
+void resetTIMEVAL(struct timeval *start, struct timeval *end){
+	(*start).tv_sec=0;
+	(*start).tv_usec=0;
+	(*end).tv_sec=0;
+	(*end).tv_usec=0;
+}
 
+void startRTT(struct timeval *start, struct timezone *tz){
+	gettimeofday(start, tz);
+}
+
+void endRTT(struct timeval *end, struct timezone *tz, struct timeval *start, struct timeval *RTTtimeval){
+	gettimeofday(end, tz);
+	long long diff;
+	diff=((*end).tv_sec-(*start).tv_sec) * 1000000L + ((*end).tv_usec-(*start).tv_usec);
+  printf("durée = %d usec\n",diff);
+	timersub(end, start, RTTtimeval);
+	RTT=((*RTTtimeval).tv_sec) * 1000000L + ((*RTTtimeval).tv_usec);
+	printf("RTTtimeval : %d usec\n", RTT);
+}
 // Function receiveACK_Segment, return -1 if nothing received, 0 if 'FIN' reserve, or ACK if received
 int receiveACK_Segment(char bufferACK[], int desc, struct sockaddr_in adressClient, int* sizeResult, fd_set set){
 	int i;
@@ -84,7 +103,7 @@ int sendData(int seq, char buffer[], char purData[], int desc, struct sockaddr_i
 	int i, try;
 	char zero[1], c[7];
 	c[6] = '\0';
-	sprintf(zero, "%d", 0);	
+	sprintf(zero, "%d", 0);
 	if(seq<10){
 		for(i=0; i<5; i++) buffer[i]='0';
 		buffer[i]='\0';
@@ -104,8 +123,9 @@ int sendData(int seq, char buffer[], char purData[], int desc, struct sockaddr_i
 	sprintf(c, "%d", seq);
 	strcat(buffer, c);
 	buffer[6]='\0';
-	strcat(buffer, purData);
-	printf("%d %d %d %d %s\n", desc, adressClient.sin_port, adressClientLength, adressClient.sin_family, inet_ntoa(adressClient.sin_addr));
+	int compteurTest;
+	for(compteurTest=0; compteurTest<1018; compteurTest++)	buffer[compteurTest+6] = purData[compteurTest];
+	//printf("%d %d %d %d %s\n", desc, adressClient.sin_port, adressClientLength, adressClient.sin_family, inet_ntoa(adressClient.sin_addr));
 	try = sendto(desc, buffer, sizeBuffer, 0, (struct sockaddr*)&adressClient, adressClientLength);
 	if(try<0){
 		perror("error sendto");
@@ -130,7 +150,7 @@ int handShakeServer(int* desc, struct sockaddr_in* ptrAdress, int port_data){
 	char bufferACK[4]="ACK\0";
 	char buffer[10];
 	socklen_t sizePtrAdress = sizeof(*ptrAdress);
-	
+
 	int msg=recvfrom(*desc, buffer, sizeof(buffer)-1, 0, (struct sockaddr*)ptrAdress, &sizePtrAdress);
 
 	if(strcmp(buffer,bufferSYN)==0){
@@ -169,13 +189,10 @@ void handleError(int val, char* error){
 
 // Function receiveFileName
 void receiveFileName(int descData, struct sockaddr_in adressClient, char fileName[])
-{	
+{
 	refreshBuffer(fileName, 100);
 	socklen_t size = sizeof(adressClient);
-	printf("Waiting for the filename...\n");
+	//printf("Waiting for the filename...\n");
 	recvfrom(descData, fileName, 100, 0, (struct sockaddr*)&adressClient, &size);
-	printf("the file's name is : %s\n", (fileName));
+	//printf("the file's name is : %s\n", (fileName));
 }
-
-
-

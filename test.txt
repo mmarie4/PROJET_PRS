@@ -1,0 +1,330 @@
+Ces dernières années, il y a eu des avancées ma-
+jeures dans le développement des micros capteurs
+wireless, sans l, de faible puissance. L'émergence
+d'une telle technologie a encouragé la création de
+réseaux de capteurs à grandes échelles à plusieurs
+usages, dans les domaines militaires et civils. Les
+applications sont donc multiples comme la surveil-
+lance des champs de batailles dans le domaine
+du militaire, la gestion de catastrophes naturelles
+ou encore le taux de pollution dans les villes à
+forte densité dans le domaine des applications
+civiles. Ces applications, qui ne sont que quelques
+exemples parmi tant d'autres, soulèvent certains
+problèmes, comme ceux de l'autonomie énergétique,
+des protocoles de communication ou encore de
+la sécurité car ces systèmes sont vulnérables en
+raison l'absence de protection physique et du fait
+de transmissions des communications sans ls.
+Tout
+d'abord
+qu'est
+ce
+qu'un
+réseau
+de
+capteurs
+à
+grande
+échelle
+?
+C'est un système qui est composé d'innombrables
+capteurs autonomes qui sont souvent regroupés en
+groupes ou clusters. Ces capteurs ne sont toutefois
+pas complètement autonomes puisqu'ils nécessitent
+des passerelles et de puits, qui centralisent toutes les
+informations recueillies par les diérents capteurs,
+an de pouvoir utiliser les architectures informa-
+tiques déjà en place. Chaque groupe nécessite donc
+une passerelle dédiée qui permettra de transférer
+les données collectées, à l'aide des capteurs, par
+Location-Aware
+agement
+Scheme
+Networks
+F.
+Younis,
+jaldeep
+Combinatorial
+publié
+for
+en
+Senior
+Ghumman,
+Key
+Clustered
+2006
+par
+Member,
+and
+Mohamed
+Man-
+Sensor
+Mohamed
+IEEE,
+Ka-
+Eltoweissy .
+Ce protocole est hiérarchique, c'est à dire qu'il
+aboutit à une gestion évolutive des clefs et des
+communications sécurisées multigranularité. Cette
+solution est aussi distribuée, c'est à dire qu'elle
+répartit les diérentes activités de la gestion des
+clés entre les n÷uds multiples du réseau. Elle
+emploie la méthodologie du Système de Base
+d'Exclusion, une solution qui permet de générer et
+de rafraîchir ecacement les clefs dans les grands
+réseaux. Le SHELL sera résistant aux collusions en
+réduisant ainsi les risques sur les n÷uds compromis.
+Cette solution optimise aussi la consom-
+mation d'énergie et les problèmes de place
+12
+nous l'avons vu, le nombre total de clefs dans le
+système est égal au maximum (k+m) et le nombre
+maximal de combinaisons de clefs est donné par
+
+(k+m)!
+le coecient binomial k+m
+= (k!)((k+m)−k)!
+.
+k
+
+k+m
+Un tel protocole nécessite que
+soit
+k
+supérieur ou égal au nombre N de n÷ud.
+Pour construire un EBS de paramètres (N, k,
+m) avec des valeurs de k et m possibles, il faut
+déterminer le nombre de manières possibles de
+former un sous-réseau de k n÷uds parmi un groupe
+de (k+m) n÷uds. On choisit pour cela de créer
+une séquence dans laquelle on construit des chaînes
+de caractères composées exclusivement de bits de
+longueur égale à (k+m). Un 1 dans cette chaîne
+à la position i, i ≤ (k + m) signie que le n÷ud
+i est inclus dans le sous-réseau. Par exemple, la
+matrice canonique A de l'EBS (10; 3; 2) contient
+
+l'énumération de toutes les façons 53 = 10 de
+former un sous ensemble de trois clés à partir de
+cinq clés, comme indiqué dans le tableau ci-dessous:
+mémoire dus au protocole de sécurité.
+L'organisation d'un réseau utilisant le SHELL
+est basée sur une architecture composée de plusieurs
+clusters, qui regroupe une multitude de capteurs
+physiques et d'une passerelle. Les capteurs sont
+chargés de collecter des données qui seront transmises
+via la passerelle au n÷ud de commande.
+2
+Prédéploiement
+Tout d'abord il est important de préciser que
+le n÷ud de commande, le puits, est considéré
+sécurisé alors que les capteurs et les passerelles
+peuvent être sujets à des attaques malveillantes. Le
+SHELL est basé sur un système basique d'exclusion
+(EBS, Exclusion Basic System) développé par
+Eltoweissy et al dans la publication Combinato-
+rial Optimization of Key Management in Group
+Communications J. Network and Systems Man-
+agement, vol.
+12, no.
+1, pp.
+33-50, Mar.
+PRÉDÉPLOIEMENT
+2004 .
+EBS est une méthodologie d'optimisation combi-
+natoire pour la gestion des clefs. EBS exploite le
+compromis entre le nombre de clés administratives
+k, et le nombre de clefs de cryptage m. Un
+ensemble (k+m) de clés est utilisé pour prendre en
+charge un ensemble de N n÷uds, chaque n÷ud se
+voit alors aecté d'un trousseau de clefs. Prenons
+l'exemple d'un réseau composé de 3 sous réseaux
+alors il pourrait y avoir deux systèmes d'exclusion:
+un pour deux des sous-réseaux, et un autre pour le
+troisième sous-réseau, chaque sous réseau se voyant
+aecté une clef associée. Ce protocole d'exclusion
+impose que chaque n÷ud du réseau possède un
+ensemble unique de clefs mémorisées.
+Comme
+shc_ma1.png
+23
+mande en envoyant un message broadcast par
+lequel la passerelle indique de manière cryptée
+son identiant et sa géolocalisation à l'aide de la
+clef qui leur a été attribuée au préalable. Une
+fois les connexions puits-passerelle établies, le
+puits envoie des clefs spéciques an que les con-
+nexions inter-passerelles soient créées, ainsi que
+d'autres clefs, les clefs Ksg, pour la phase de re-
+connaissance des capteurs.
+On peut donc conclure que le pré-déploiement est
+déterministe et que les clefs qui sont déjà chargées
+sont les clefs de communication entre les passerelles
+et le puits, ainsi que les clefs de découvertes des
+capteurs lors de l'initialisation du réseau après
+déploiement.
+3
+DÉTAILS DU PROTOCOLE SHELL
+Détails du protocole SHELL
+Tout d'abord il est important de comprendre que
+chaque n÷ud possède une base de données contenant
+les identiants des autres n÷uds et que chaque n÷ud
+doit donc stocker k clefs administratives et m clefs de
+communications. Le choix des paramètres k et m est
+un compromis à réaliser entre l'utilisation mémoire
+et l'utilisation de la bande passante. Toutes les
+passerelles ne sont pas toutes génératrices de matri-
+ces EBS. En eet un EBS est généralement constitué
+de plusieurs clusters. Ainsi il sut d'une passerelle
+par EBS pour créer la matrice canonique de l'EBS
+qui génère les clefs de son cluster ainsi que elles
+des autres clusters qui lui sont liées. Les passerelles
+génératrices peuvent aussi rafraîchir sur demande
+les clefs, détecter et évacuer les n÷uds compromis.
+La mise en route de ce protocole commence im-
+médiatement après le déploiement des capteurs
+dispersés dans une zone géographique. Cette mise
+en route du protocole se décompose en trois grandes
+parties: la mise en place du réseau, la génération
+des clefs de sécurité et enn la création des clusters:
+• Une fois les connexions inter-passerelles établies,
+la phase de détection des capteurs peut com-
+mencer. Les capteurs diusent en cas de
+besoin, leur identiants et leur géolocalisa-
+tion aux passerelles. Lors de la réception de
+l'annonce envoyée par un capteur, une passerelle
+déchirera le message et tabulera l'identiant et
+l'emplacement du capteur dans sa base de don-
+nées. Dès que la détection du capteur est ter-
+minée, les capteurs génèrent une nouvelle clef
+Ksg à l'aide d'une fonction de hashage unidirec-
+tionnel. Pour des raisons de sécurité, cette fonc-
+tion est connue du n÷ud de commande ainsi que
+des capteurs mais pas des passerelles. La nal-
+ité de cette opération, est de rendre obsolète les
+clefs Ksg actuelles connues des passerelles. C'est
+un processus crucial pour la récupération d'une
+passerelle compromise.
+• Puis il y a la création des clusters, c'est-à-
+dire que les capteurs doivent être regroupés
+en clusters, les passerelles collaborent alors en-
+tre elles pour former des clusters, mais chaque
+cluster est géré par une passerelle. Pour la
+méthode d'EBS, la portée et l'emplacement géo-
+graphique sont des critères utilisés pour re-
+• Le protocole commence par un enregistrement
+des passerelles, pour ce faire celles-ci établissent
+un canal de communication avec le n÷ud de com-
+34
+AMÉLIORATION DU PROTOCOLE
+grouper les n÷uds en clusters en accord avec des clefs de découvertes qui ont pour principal ob-
+les références données dans les publications: jectif de permettre d'établir les connexions élémen-
+G. Gupta and M. Younis, Load-Balanced Clus- taires dont a besoin le SHELL pour initialiser sa
+tering in Wireless Sensor Networks, Proc. Int'l mise en route. Une fois que le n÷ud de commande
+Conf. Comm. (ICC '03), May 2003 et O. You- aura annoncé ses caractéristiques, ces passerelles vont
+nis and S. Fahmy, HEED: A Hybrid, Energy- générer les clefs nécessaires au cryptage des données.
+Ecient, Distributed Clustering Approach for Le fonctionnement normal de ce protocole est as-
+Ad Hoc Sensor Networks, IEEE Trans. Mobile sez simple, car une fois la mise en place eectuée,
+Computing, vol. 3, no. 4, pp. 366-379, Oct.- il se contente de rafraîchir périodiquement les clefs
+et d'ajouter d'éventuels nouveaux capteurs. Il gère
+Dec. 2004 .
+aussi toutefois les éventuelles captures des diérentes
+Ensuite les diérentes matrices EBS sont crées. Pour passerelles et n÷uds.
+ce faire, chaque passerelle eectue une analyse des
+clusters qui lui sont rattachés pour dénir le nombre
+de clés administratives nécessaires au bon fonction- 4 Amélioration du protocole
+nement des clusters. EBS propose des compromis en
+ce qui concerne les exigences de stockage et le nom- Les chercheurs qui ont conçu le protocole SHELL
+bre de messages de réécriture. Une augmentation ont souhaité améliorer la prévention des collusions.
+du nombre de clefs administratives, k, augmente la Deux n÷uds colludent lorsqu'ils partagent les clefs
+capacité de stockage par n÷ud, tandis qu'une aug- les uns avec les autres. Dans le cas du protocole
+mentation de nombre de clefs de cryptage, m, con- SHELL, les mêmes clefs étant utilisées dans plusieurs
+duit à une augmentation des frais généraux dans n÷uds, les probabilités d'échanges d'information
+la communication des nouvelles clés. En fonction par des n÷uds compromis augmentent, ce qui
+de la taille du cluster et de la mémoire disponible peut aboutir à la capture du réseau. C'est un
+dans le capteur, la passerelle optimise la valeur des problème récurrent dans les allocations de clefs.
+paramètres k et m d'un EBS. Pour un grand clus- Le schéma directeur pour diminuer les risques
+ter, il peut être préférable d'augmenter la valeur de d'attaque d'un réseau par ces attaques de type
+m pour limiter les besoins de stockage par n÷ud. collusion est d'exploiter la proximité des n÷uds
+Ceux sont deux des critères de sélection des valeurs an qu'un n÷ud ne partage la plupart de ses
+des variables k et m pour la formation des matrices. clefs qu'avec des n÷uds directement accessibles,
+Une fois ces matrices formées, certaines passerelles ce qui a pour eet d'augmenter la valeur du nom-
+seront aectés à la tête des diérents EBS pour bre de n÷ud qui doit être compromis pour que
+être les passerelles génératrices des clefs de sécu- toutes les clefs du réseau deviennent accessibles.
+rités car on le rappelle, les clefs qui sont stockées Deux n÷uds en collusion partage (k -d/2) clefs avec
+au préalable dans les passerelles et les n÷uds sont k le nombre de clefs de chacun n÷ud et d la distance
+44
+de hamming entre ces deux n÷uds. Ainsi si deux
+n÷uds sont en collusion alors un attaquant du réseau
+aura accès (k + d/2) clefs. En eet si les deux n÷uds
+ont chacun k clefs, et qu'ils en partagent (k − d/2)
+alors l'attaquant connaîtra (k − d/2 + d/2 + d/2)
+soit (k + d/2) clefs. On peut donc voir la nécessité
+de diminuer la distance de hamming pour qu'un
+attaquant ait le moins d'informations possible
+suite à une attaque par collusion. On pourrait
+donc se dire qu'on ne va distribuer qu'une seule
+clef par capteur an de minimiser le nombre de
+clefs auxquelles pourrait avoir accès un attaquant.
+Toutefois cette solution n'est pas viable car elle
+oblige de très nombreuses réécritures, ce qui aug-
+menterait notablement les frais généraux du réseau.
+Les chercheurs dénissent une chaîne de collusion
+comme étant la fermeture transitive d'un ensemble
+de n÷uds collusoires, de sorte que le total des clés
+assignées inclut toutes les clés k + m du réseau. Pour
+illustrer ceci, regardons dans la gure ci-dessous:
+AMÉLIORATION DU PROTOCOLE
+• Cependant, dans le cas b, les trois n÷uds ont
+été compromis, il y a alors une chaîne de collu-
+sion. On voit clairement qu'il est essentiel que les
+combinaisons de clefs soient assignées de manière
+soigneuse de telle sorte qu'il faille augmenter la
+longueur de la chaîne de collusion pour avoir ac-
+cès à la totalité des clefs du réseau. Les chaînes
+longues diminuent donc la probabilité de cap-
+turer le réseau puisqu'il faut alors plus de n÷ud
+compromis pour capturer le réseau entier.
+Pour bien formuler leur problèmes les chercheurs
+représentent le réseau de capteurs sous forme de
+graphe G(V,E) avec V l'ensemble des N n÷uds
+et E les arrêtes qui représentent le nombre de
+connexions dans le réseau. Chaque arrête a un
+poids égale à la distance euclidienne entre les deux
+n÷uds qu'elle relie. Ils ont choisi d'utiliser la
+distance de hamming pour hiérarchiser les voisins
+parce que celle-ci dépend de la distance euclidi-
+enne et qu'en général deux n÷uds proches restent
+en contact plus longtemps contrairement aux voisins
+lointains en raison, par exemple, de bruit accru,
+d'obstacles qui se rajouteraient, etc. Le prob-
+lème d'arrêt de communications entre deux voisins
+lointains est traité par la publication de D. Car-
+sch_ma2.png
+man, P. Kruus, and B. Matt, Constraints and Ap-
+proaches for Distributed Sensor Networks Security,
+Technical Report 00-010, NAI Labs, Sept.
+2000 .
+Mais comment ont-ils procéder pour implémenter
+leur solution Tout d'abord ils traitent un n÷ud
+avec le plus de voisins possibles puis pour ce n÷ud,
+l'algorithme va traiter d'abord les voisins avec la
+plus petite distance de hamming puis les autres dans
+l'ordre croissant des distances de hamming. Les com-
+• Dans le cas a, bien que les n÷uds 1 et 3 aient été
+compromis, ils ne peuvent pas être en collusion
+car le n÷ud 2 est un n÷ud sans compromission et
+il n'y a pas de liaison de communication directe
+entre les n÷uds 1 et 3.
+55
+et m. Les résultats tracés montrent la relation
+entre diérentes valeurs de k et m et le nombre
+correspondant de n÷uds requis dans la chaîne de
+collusion pour capturer le réseau. L'axe vertical
+droit représente la longueur de la chaîne de col-
+lusion alors que l'axe vertical gauche indique le
+nombre total de clés avec "k". Les expériences
+ont été répétées en utilisant l'assignation aléatoire
+des clés aux n÷uds pour avoir une comparaison.
+binaisons de clefs distribuées sont uniqu
