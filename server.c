@@ -1,7 +1,8 @@
 #include "functions.h"
+#include <pthread.h>
 #include <sys/time.h>
 #include <signal.h>
-
+#include <pthread.h>
 
 int desc;
 
@@ -12,6 +13,9 @@ void terminate(){
 
 int main(int argc, char* argv[]){
 	signal(SIGINT, terminate);
+
+	pthread_t thread1;
+
 	//Initialisation
 	struct sockaddr_in adressServer;
 	struct sockaddr_in adressClient;
@@ -49,8 +53,10 @@ int main(int argc, char* argv[]){
 			editStructurAdress(&adressData, port_data, INADDR_ANY);
 			bindServer(&descData, &adressData);
 
-			int pid=fork();
-			if(pid==0){ // Processus fils : send data
+			//int pid=fork();
+			//if(pid==0){ // Processus fils : send data
+			void *thread_1(void *arg)
+			{
 				int slowStartCounter = 0, cwnd = 1, counterACK=0;
 				char purData[RCVSIZE-6];
 				char filename[100];
@@ -123,11 +129,25 @@ int main(int argc, char* argv[]){
 				fflush(file);
 				fclose(file);
 				close(descData);
-
-			}else{
+				(void) arg;
+				pthread_exit(NULL);
+			}//else{
 				// Processus pere
-				close(descData);
- 			}
+				//close(descData);
+ 			//}
+ 			if (pthread_create(&thread1, NULL, thread_1, NULL))
+			{
+				perror("pthread_create");
+				return EXIT_FAILURE;
+			
+			}
+			if (pthread_join(thread1, NULL))
+			{
+				perror("pthread_join");
+				return EXIT_FAILURE;
+			}
+			printf("Après la création du thread.\n");
+			return EXIT_SUCCESS;
 		}
 	}
 	close(desc);
