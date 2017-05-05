@@ -11,6 +11,25 @@
 
 struct timeval RTTtimeval;
 
+// Function test_previousACK() whoch verify if 3 consecutives ACK are equals
+int sameConsecutiveACK(int tabACK[], int j){
+	if(tabACK[j]==tabACK[j-1] && tabACK[j]==tabACK[j-2]){
+		return 1;
+	}else{
+		return 0;
+	}
+}
+
+// Function max which find the maximum value in a table
+int max(int tab[], int size){
+	int i;
+	int val_max = 0;
+	for (i=0; i<size; i++){
+		if (tab[i]>val_max) val_max=tab[i];
+	}
+	return val_max;
+}
+
 // Function refreshBuffer which replaces all the char of a char[] with a '\0'
 void refreshBuffer(char buf[], int size){
 	int i = 0;
@@ -53,7 +72,6 @@ int receiveACK_Segment(char bufferACK[], int desc, struct sockaddr_in adressClie
 		numACK[6]='\0';
 		return atoi(numACK);
 	}
-	printf("Nothing received : resend paquet\n");
 	return -1;
 }
 

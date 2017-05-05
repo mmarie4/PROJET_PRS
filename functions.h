@@ -35,5 +35,7 @@ void refreshBuffer(char buf[], int size);
 void handleError(int val, char* error);
 
 int receiveACK_Segment(char bufferACK[], int descClient, struct sockaddr_in adressClient, int* sizeResult, fd_set set, struct timeval *RTTtimeval, struct timeval *waiting_time);
+int sameConsecutiveACK(int tabACK[], int j);
+int max(int tab[], int size);
 
 #endif
