@@ -74,11 +74,11 @@ int main(int argc, char* argv[]){
 				FD_ZERO(&set);
 
 				//initialize RTT just for the first paquet, before real RTT is calculated
-				RTTtimeval.tv_usec = 20000;
+				RTTtimeval.tv_usec = 15000;
 				RTTtimeval.tv_sec = 0;
 
 				// Fenetre flottante : on envoie tous les paquets puis on recoit tous les acquitements
-				cwnd = 10;
+				cwnd = 30;
 				int tabACK[cwnd];
 				int ACK_max = 0;
 				int nb_paquets_received = 0;
@@ -105,8 +105,13 @@ int main(int argc, char* argv[]){
 						tabACK[j] = receiveACK_Segment(bufferACK, descData, adressClient, &sizeResult, set, &RTTtimeval, &waiting_time);
 						printf("ACK %d received\n",tabACK[j]);
 					}
+
 					// Find the higher ACK (last paquet received), go to it in the file with fseek, and set the good seq --> the good paquet will be sent on the next loop
-					ACK_max = max(tabACK, cwnd);
+					if(nullACK(tabACK, cwnd)){
+						// do nothing : ACK are -1 so we received nothing
+					}else{
+						ACK_max = max(tabACK, cwnd);
+					}
 					printf("ACK_max = %d\n", ACK_max);
 					fseek(file, (RCVSIZE-6)*ACK_max, SEEK_SET);
 					nb_paquets_received = ACK_max-seq+1;

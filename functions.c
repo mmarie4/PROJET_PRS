@@ -11,13 +11,15 @@
 
 struct timeval RTTtimeval;
 
-// Function test_previousACK() whoch verify if 3 consecutives ACK are equals
-int sameConsecutiveACK(int tabACK[], int j){
-	if(tabACK[j]==tabACK[j-1] && tabACK[j]==tabACK[j-2]){
-		return 1;
-	}else{
-		return 0;
+// Function sameConsecutiveACK() which test if all ACK are equals
+int nullACK(int tabACK[], int size){
+	int i;
+	for(i=0; i<size; i++){
+		if(tabACK[i] != -1){
+			return 0;
+		}
 	}
+	return 1;
 }
 
 // Function max which find the maximum value in a table
@@ -61,8 +63,8 @@ int receiveACK_Segment(char bufferACK[], int desc, struct sockaddr_in adressClie
 	char numACK[7];
 	// Waiting on the socket
 	FD_SET(desc, &set);
-	timeradd(RTTtimeval, RTTtimeval, waiting_time); // RTT*2 to detect paquet loss
-	select(desc+1, &set, NULL, NULL, waiting_time);
+	//timeradd(RTTtimeval, RTTtimeval, waiting_time); // RTT*2 to detect paquet loss
+	select(desc+1, &set, NULL, NULL, RTTtimeval);
 	if(FD_ISSET(desc, &set)){
 		recvfrom(desc, bufferACK, 11, 0, (struct sockaddr*)&adressClient, sizeResult);
 		bufferACK[11]='\0';
