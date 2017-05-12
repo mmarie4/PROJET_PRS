@@ -139,7 +139,7 @@ int sendData(int seq, char buffer[], char purData[], int desc, struct sockaddr_i
 	strcat(buffer, c);
 	buffer[6]='\0';
 	int compteurTest;
-	for(compteurTest=0; compteurTest<1018; compteurTest++)	buffer[compteurTest+6] = purData[compteurTest];
+	for(compteurTest=0; compteurTest<RCVSIZE-6; compteurTest++)	buffer[compteurTest+6] = purData[compteurTest];
 	//printf("%d %d %d %d %s\n", desc, adressClient.sin_port, adressClientLength, adressClient.sin_family, inet_ntoa(adressClient.sin_addr));
 	try = sendto(desc, buffer, sizeBuffer, 0, (struct sockaddr*)&adressClient, adressClientLength);
 	if(try<0){

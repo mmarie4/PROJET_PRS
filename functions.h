@@ -12,7 +12,7 @@
 #include <sys/select.h>
 #include <sys/time.h>
 
-#define RCVSIZE 1024
+#define RCVSIZE 1496
 
 void openSocketUDP(int* descripteur);
 void editStructurAdress(struct sockaddr_in* structure, int port, int ip);

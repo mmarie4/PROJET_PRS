@@ -89,8 +89,8 @@ int main(int argc, char* argv[]){
 					for(i=0; i<cwnd;i++){
 						//resetTIMEVAL(&start, &end);
 						if((size-nbChar-(i*RCVSIZE-6))>(RCVSIZE-6)){ //si il y a encore la place pour un paquet...
-							memset(purData, '\0', 1018);
-							memset(buffer, '\0', 1024);
+							memset(purData, '\0', RCVSIZE-6);
+							memset(buffer, '\0', RCVSIZE);
 							int res = fread(purData, 1, RCVSIZE-6, file);
 							try = sendData(seq+i, buffer, purData, descData, adressClient, sizeof(adressClient), RCVSIZE);
 							printf("Paquet %d sent\n", seq+i);
